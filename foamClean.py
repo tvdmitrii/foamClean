@@ -207,7 +207,9 @@ def getTimes(proc_path, opts):
                     except IndexError:
                         continue
 
-        time_dirs_keep = list(set(time_dirs) - set(time_dirs_rm))
+            time_dirs_rm = set(time_dirs_rm)
+            time_dirs_keep = list(set(time_dirs) - time_dirs_rm)
+            time_dirs_rm = list(time_dirs_rm)
 
         if opts.which == "fields":
             time_zero = time_dirs[0].name
@@ -217,14 +219,16 @@ def getTimes(proc_path, opts):
             # Also check that the first time step is 0
             if time_dirs[0].time == 0:
                 if not opts.removeZero:
-                    time_dirs_keep.append(time_dirs.pop(0))
+                    time_dirs_keep.append(time_dirs[0])
 
             # Keeping last timestep unaffected, unless --removeLast specified.
             # Also check that the last time step is not 0
             if (not opts.removeLast) and (time_dirs[-1].time != 0):
-                time_dirs_keep.append(time_dirs.pop())
+                time_dirs_keep.append(time_dirs[-1])
 
-            time_dirs_rm = time_dirs
+            time_dirs_keep = set(time_dirs_keep)
+            time_dirs_rm = list(set(time_dirs) - time_dirs_keep)
+            time_dirs_keep = list(time_dirs_keep)
 
         time_dirs_rm.sort(key=lambda x: x.time)
         time_dirs_keep.sort(key=lambda x: x.time)
@@ -299,8 +303,8 @@ def getFields(time_path_zero, time_path_last, opts):
     fields_keep.sort()
 
     print(" ---- Fields ---- ")
-    print("Unaffected: " + str(fields_keep))
-    print("Affected: " + str(fields_rm))
+    print("Keep: " + str(fields_keep))
+    print("Remove: " + str(fields_rm))
 
     return fields_rm
 
