@@ -108,7 +108,13 @@ def getProcessors(case_path):
     :return: Sorted list of processor folder names
     """
     print("Case path: " + str(case_path))
-    filenames = os.listdir(case_path)
+
+    try:
+        filenames = os.listdir(case_path)
+    except OSError as err:
+        print(err)
+        return []
+
     p = re.compile('processor\d+')
     proc_dirs = [name for name in filenames if p.match(name)]
     proc_dirs.sort()
@@ -123,8 +129,13 @@ def _getTimeList(proc_path):
     :param proc_path: Path to the processorN within openFOAM case.
     :return: Sorted list of all timesteps
     """
-    filenames = os.listdir(proc_path)
     time_dirs = []
+    try:
+        filenames = os.listdir(proc_path)
+    except OSError as err:
+        print(err)
+        return time_dirs
+
     for name in filenames:
 
         # Skip files, we are only interested in folders
@@ -255,8 +266,13 @@ def _getFieldList(time_path):
     :param time_path: Path to a timestep folder
     :return: Sorted list of sorted fields from the timestep path and whether files are compressed or not.
     """
-    filenames = os.listdir(time_path)
     fields = []
+    try:
+        filenames = os.listdir(time_path)
+    except OSError as err:
+        print(err)
+        return fields
+
     for name in filenames:
 
         # Skip folders
