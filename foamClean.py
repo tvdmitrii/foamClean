@@ -8,7 +8,7 @@ import sys
 def readOptions(args):
     parser = argparse.ArgumentParser(description="Decomposed openFOAM case cleaner utility.")
 
-    subparsers = parser.add_subparsers(help='Get subcommand help form more information')
+    subparsers = parser.add_subparsers(dest="command", help='Get subcommand help form more information', required=True)
 
     # Timesteps subcommand parser
     p_ts = subparsers.add_parser('timesteps', help='Cleans specified timesteps by removing specified timesteps')
